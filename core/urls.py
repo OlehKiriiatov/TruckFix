@@ -37,6 +37,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
+    path('MechCall/', views.mech_call, name='mech_call'),
 ]
 
 if settings.DEBUG:

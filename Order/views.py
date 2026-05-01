@@ -38,12 +38,17 @@ def mech_call(request):
             photo = request.FILES.get('file')
 
             from .models import Order
-            Order.objects.create(description=description, file=photo)
+            # Добавляем user=request.user, чтобы заявка привязалась к тебе
+            Order.objects.create(
+                description=description,
+                file=photo,
+                user=request.user
+            )
 
-            return redirect('/')
+            return redirect('my_orders')  # Лучше сразу на список заявок
+
         return render(request, 'MechCall.html')
     except Exception as e:
-        # Это покажет нам реальную причину ошибки 500
         from django.http import HttpResponse
         return HttpResponse(f"Ошибка сохранения заявки: {e}")
 

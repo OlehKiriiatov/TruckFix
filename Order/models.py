@@ -10,6 +10,7 @@ class Order(models.Model):
     location = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     file = models.FileField(upload_to='orders/', null=True, blank=True)
+    image = models.ImageField(upload_to='orders/', null=True, blank=True)
     is_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

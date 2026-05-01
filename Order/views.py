@@ -38,7 +38,7 @@ def mech_call(request):
             photo = request.FILES.get('file')
 
             from .models import Order
-            Order.objects.create(description=description, image=photo)
+            Order.objects.create(description=description, file=photo)
 
             return redirect('/')
         return render(request, 'MechCall.html')

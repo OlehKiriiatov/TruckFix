@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TruckFix — Call a Mechanic</title>
+    <style>
+        body { background-color: #0d1117; color: #adbac7; font-family: -apple-system, system-ui, sans-serif; margin: 0; }
+        .container { max-width: 500px; margin: 40px auto; padding: 20px; }
+
+        /* КНОПКА BACK TO MENU */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            color: #c9d1d9;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            background-color: #21262d;
+            margin-bottom: 25px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background-color: #30363d;
+            border-color: #8b949e;
+            transform: translateX(-3px);
+        }
+
+        .order-form {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        /* ПЛАШКА СТАТУСА (скрыта по умолчанию) */
+        .status-alert {
+            background: rgba(35, 134, 54, 0.1);
+            border: 1px solid #238636;
+            color: #3fb950;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 8px; color: #adbac7; font-size: 14px; }
+
+        input[type="text"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 10px;
+            background: #f0f2f5;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #0d1117;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .file-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn:hover { background: #2ea043; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="{% url 'index' %}" class="back-link">
+            <svg viewBox="0 0 16 16" width="16" height="16" style="margin-right: 8px; fill: currentColor;">
+                <path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7.25h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+            </svg>
+            Back to Menu
+        </a>
+
+        <!-- Плашка статуса -->
+        <div id="dynamic-status-badge" class="status-alert">
+            <span style="font-size: 20px;">✅</span>
+            <div>
+                <strong style="display: block;">Your order has been accepted!</strong>
+                <span style="font-size: 13px;">The mechanic is on his way to your location.</span>
+            </div>
+        </div>
+
+        <div class="order-form">
+            <h2 style="margin-top: 0; font-size: 20px;">Submit an Application</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Truck Model</label>
+                    <input type="text" name="truck_model" placeholder="Example: Volvo FH16" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" placeholder="City, road, or GPS" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone_number" placeholder="+1 (___) ___ __ __" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3" placeholder="What happened?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Photo (optional)</label>
+                    <div style="position: relative;">
+                        <div class="file-btn" id="fileLab">Choose File</div>
+                        <input type="file" name="file" style="position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;" onchange="document.getElementById('fileLab').innerText = this.files[0].name">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Проверяем, есть ли в текущем контексте заказ
+        let hasActiveOrder = {% if order %} true {% else %} false {% endif %};
+        let isAccepted = {% if order and order.is_accepted %} true {% else %} false {% endif %};
+
+        const badge = document.getElementById('dynamic-status-badge');
+
+        // Если при загрузке страницы заказ уже принят — показываем сразу
+        if (isAccepted) {
+            badge.style.display = 'flex';
+        }
+
+        function checkStatus() {
+            // Если заказа нет в сессии или он уже принят визуально, прекращаем опрос
+            if (!hasActiveOrder || isAccepted) return;
+
+            fetch('/check-status/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_accepted) {
+                        badge.style.display = 'flex';
+                        isAccepted = true; // Останавливаем цикл
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Запускаем проверку раз в 3 секунды, только если форма была отправлена
+        if (hasActiveOrder && !isAccepted) {
+            setInterval(checkStatus, 3000);
+        }
+    </script>
+</body>
+</html>

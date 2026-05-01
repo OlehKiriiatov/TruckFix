@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #3b82f6;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .order-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .order-id {
+            font-weight: bold;
+            color: #60a5fa;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .label {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+        .value {
+            font-weight: 500;
+        }
+        .photo-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #334155;
+        }
+        .truck-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .truck-image:hover {
+            transform: scale(1.02);
+        }
+        .delete-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .delete-btn:hover {
+            background-color: #dc2626;
+        }
+        .no-photo {
+            color: #64748b;
+            font-style: italic;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="{% url 'index' %}" class="back-link">← Back to Main Page</a>
+    <h1>Active Repair Requests</h1>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <span class="order-id">Order #{{ order.id }}</span>
+            <span class="label">{{ order.created_at|date:"M d, H:i" }}</span>
+        </div>
+
+        <div class="info-grid">
+            <div>
+                <div class="label">Truck Model:</div>
+                <div class="value">{{ order.truck_model }}</div>
+            </div>
+            <div>
+                <div class="label">Location:</div>
+                <div class="value">{{ order.location }}</div>
+            </div>
+            <div>
+                <div class="label">Phone:</div>
+                <div class="value">{{ order.phone_number }}</div>
+            </div>
+            <div>
+                <div class="label">Description:</div>
+                <div class="value">{{ order.description }}</div>
+            </div>
+        </div>
+
+        <div class="photo-section">
+            <div class="label">Attached Photo:</div>
+            {% if order.file %}
+                <img src="{{ order.file.url }}" alt="Photo" style="max-width: 200px;">
+            {% endif %}
+        </div>
+
+<div style="display: flex; gap: 10px; margin-top: 20px; align-items: center;">
+            {% if not order.is_accepted %}
+                <!-- Если механик еще не нажал кнопку -->
+                <a href="{% url 'accept_order' order.id %}" class="btn-accept">Принять заказ</a>
+            {% else %}
+                <!-- Эта надпись появится СРАЗУ ПОСЛЕ нажатия кнопки -->
+                <span style="color: #3fb950; font-weight: bold; border: 1px solid #3fb950; padding: 8px 15px; border-radius: 6px; background: rgba(63, 185, 80, 0.1);">
+                    ✅ Заказ принят
+                </span>
+            {% endif %}
+
+            <a href="{% url 'delete_order' order.id %}" class="delete-btn" onclick="return confirm('Are you sure?')">Complete / Delete</a>
+        </div>
+    </div> <!-- Закрываем order-card -->
+
+{% empty %}
+    <p style="text-align: center; color: #adbac7;">No active orders at the moment.</p>
+{% endfor %}
+
+</body>
+</html>

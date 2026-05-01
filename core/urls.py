@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from Order import views
+from django.contrib.auth.models import User
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,3 +37,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if not User.objects.filter(username='admin_boss').exists():
+    User.objects.create_superuser('admin_boss', 'admin@example.com', 'Fix12345')

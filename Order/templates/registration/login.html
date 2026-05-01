@@ -1,133 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In — TruckFix</title>
-    <a href="{% url 'register' %}" class="back-link">Don't have an account? Register here</a>
+    <title>Вход в систему | TruckFix</title>
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --text-main: #adbac7;
-            --accent-blue: #58a6ff;
-            --accent-green: #238636;
-            --border-color: #30363d;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-
-        h2 { color: white; margin-bottom: 30px; font-size: 28px; text-align: center; }
-
-        .form-group { margin-bottom: 20px; }
-
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #768390; }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #0d1117;
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        input:focus {
-            border-color: var(--accent-blue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--accent-green);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            background-color: #2ea043;
-            transform: translateY(-2px);
-        }
-
-        .errorlist {
-            color: #f85149;
-            list-style: none;
-            padding: 10px;
-            background: rgba(248, 81, 73, 0.1);
-            border-radius: 8px;
-            font-size: 14px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .back-link {
-            display: block;
-            margin-top: 25px;
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-size: 14px;
-            text-align: center;
-        }
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
+        .login-card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; }
+        h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .error { color: red; font-size: 0.8rem; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h2>TruckFix</h2>
+<div class="login-card">
+    <h2>Вход для механика</h2>
 
-        <form method="post">
-            {% csrf_token %}
+    <!-- Самая важная часть: тег form -->
+    <form method="post">
+        <!-- Без этой строчки Django выдаст ошибку 403 -->
+        {% csrf_token %}
 
-            {% if form.errors %}
-                <div class="errorlist">
-                    Invalid username or password.
-                </div>
-            {% endif %}
+        <!-- name="username" должен быть именно таким! -->
+        <input type="text" name="username" placeholder="Ваш логин" required>
 
-            <div class="form-group">
-                <label for="id_username">Username</label>
-                {{ form.username }}
-            </div>
+        <!-- name="password" должен быть именно таким! -->
+        <input type="password" name="password" placeholder="Пароль" required>
 
-            <div class="form-group">
-                <label for="id_password">Password</label>
-                {{ form.password }}
-            </div>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
 
-            <button type="submit" class="btn-login">Sign In</button>
-        </form>
+        <button type="submit">Войти на мостик</button>
+    </form>
 
-        <a href="{% url 'index' %}" class="back-link">← Back to Menu</a>
-    </div>
+    <p style="text-align: center; font-size: 0.8rem; margin-top: 15px;">
+        <a href="/">Назад на главную</a>
+    </p>
+</div>
 
 </body>
 </html>

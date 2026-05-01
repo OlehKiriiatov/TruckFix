@@ -12,18 +12,22 @@ def index(request):
 
 @login_required
 def mech_call(request):
+    order = None
+
     if request.method == 'POST':
         form = OrderForm(request.POST, request.FILES)
         if form.is_valid():
-            order = form.save(commit=False) # Не сохраняем в базу сразу
-            order.user = request.user       # Привязываем заказ к текущему юзеру (Олегу)
-            order.save()                    # Теперь сохраняем окончательно
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
             return redirect('index')
     else:
         form = OrderForm()
-    return render(request, 'MechCall.html', {'form': form})
 
-    return render(request, 'MechCall.html', {'order': order})
+    return render(request, 'MechCall.html', {
+        'form': form,
+        'order': order
+    })
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')
@@ -58,7 +62,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user) # Автоматический вход после регистрации
+            login(request, user)
             return redirect('index')
     else:
         form = UserCreationForm()

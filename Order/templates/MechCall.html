@@ -8,7 +8,6 @@
         body { background-color: #0d1117; color: #adbac7; font-family: -apple-system, system-ui, sans-serif; margin: 0; }
         .container { max-width: 500px; margin: 40px auto; padding: 20px; }
 
-        /* КНОПКА BACK TO MENU */
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -36,7 +35,6 @@
             border-radius: 8px;
         }
 
-        /* ПЛАШКА СТАТУСА (скрыта по умолчанию) */
         .status-alert {
             background: rgba(35, 134, 54, 0.1);
             border: 1px solid #238636;
@@ -97,7 +95,6 @@
 <body>
 
     <div class="container">
-        <!-- Back Button -->
         <a href="{% url 'index' %}" class="back-link">
             <svg viewBox="0 0 16 16" width="16" height="16" style="margin-right: 8px; fill: currentColor;">
                 <path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7.25h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
@@ -105,7 +102,6 @@
             Back to Menu
         </a>
 
-        <!-- Плашка статуса -->
         <div id="dynamic-status-badge" class="status-alert">
             <span style="font-size: 20px;">✅</span>
             <div>
@@ -147,19 +143,16 @@
     </div>
 
     <script>
-        // Проверяем, есть ли в текущем контексте заказ
         let hasActiveOrder = {% if order %} true {% else %} false {% endif %};
         let isAccepted = {% if order and order.is_accepted %} true {% else %} false {% endif %};
 
         const badge = document.getElementById('dynamic-status-badge');
 
-        // Если при загрузке страницы заказ уже принят — показываем сразу
         if (isAccepted) {
             badge.style.display = 'flex';
         }
 
         function checkStatus() {
-            // Если заказа нет в сессии или он уже принят визуально, прекращаем опрос
             if (!hasActiveOrder || isAccepted) return;
 
             fetch('/check-status/')
@@ -167,13 +160,12 @@
                 .then(data => {
                     if (data.is_accepted) {
                         badge.style.display = 'flex';
-                        isAccepted = true; // Останавливаем цикл
+                        isAccepted = true;
                     }
                 })
                 .catch(error => console.error('Error:', error));
         }
 
-        // Запускаем проверку раз в 3 секунды, только если форма была отправлена
         if (hasActiveOrder && !isAccepted) {
             setInterval(checkStatus, 3000);
         }

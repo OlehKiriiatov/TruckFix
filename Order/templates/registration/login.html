@@ -2,39 +2,95 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Вход | TruckFix</title>
-    <!-- Сюда вставь свой старый CSS -->
+    <title>Вход в систему | TruckFix</title>
+    <!-- Твои старые стили -->
     <style>
-        /* Твой старый стиль */
-        body { background: #222; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .login-form { display: inline-block; background: #333; padding: 20px; border-radius: 10px; }
-        input { display: block; margin: 10px auto; padding: 10px; width: 200px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #ff9900; border: none; cursor: pointer; font-weight: bold; }
-        .error-text { color: #ff4444; margin-bottom: 10px; }
+        body {
+            background: #222;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: #333;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+        h2 { color: #ff9900; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Твои старые инпуты */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #444;
+            color: white;
+            box-sizing: border-box;
+        }
+        input:focus { outline: 2px solid #ff9900; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ff9900;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        button:hover { background: #e68a00; transform: scale(1.02); }
+
+        .error-box {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4444;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-form">
-        <h2>ВХОД В СИСТЕМУ</h2>
+<div class="login-container">
+    <h2>TruckFix Вход</h2>
 
-        <!-- ВАЖНО: method="POST" и отсутствие action (значит шлет на этот же URL) -->
-        <form method="POST">
-            {% csrf_token %}
+    <!-- Обязательно method="POST" -->
+    <form method="POST">
+        <!-- КРИТИЧЕСКИ ВАЖНО: Без этого пароль не примется -->
+        {% csrf_token %}
 
-            {% if error %}
-                <div class="error-text">{{ error }}</div>
-            {% endif %}
+        <!-- Если есть ошибка, она покажется здесь -->
+        {% if error %}
+            <div class="error-box">{{ error }}</div>
+        {% endif %}
 
-            <!-- ВАЖНО: name="username" -->
-            <input type="text" name="username" placeholder="Логин" required>
+        <!-- Обязательно name="username" -->
+        <input type="text" name="username" placeholder="Логин механика" required>
 
-            <!-- ВАЖНО: name="password" -->
-            <input type="password" name="password" placeholder="Пароль" required>
+        <!-- Обязательно name="password" -->
+        <input type="password" name="password" placeholder="Пароль" required>
 
-            <button type="submit">ВОЙТИ</button>
-        </form>
+        <button type="submit">ЗАПУСТИТЬ СИСТЕМУ</button>
+    </form>
+
+    <div style="margin-top: 20px; font-size: 0.8rem;">
+        <a href="/" style="color: #888; text-decoration: none;">← Вернуться на главную</a>
     </div>
+</div>
 
 </body>
 </html>

@@ -5,36 +5,34 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
 
 def index(request):
     return render(request, 'index.html')
 
 
-
 def user_login(request):
     error_message = None
     if request.method == 'POST':
-        # Получаем данные из полей name="username" и name="password"
         u = request.POST.get('username')
         p = request.POST.get('password')
-
-        # Печатаем в консоль для отладки (увидишь в Logs на Render)
-        print(f"--- Пытаемся войти: логин={u} ---")
 
         user = authenticate(request, username=u, password=p)
 
         if user is not None:
             login(request, user)
-            print("--- Вход выполнен успешно! ---")
-            return redirect('index')  # Убедись, что 'index' это имя главной страницы в urls.py
+            return redirect('index')
         else:
-            print("--- Ошибка: Пользователь не найден или пароль неверен ---")
             error_message = "Неверный логин или пароль"
 
     return render(request, 'login.html', {'error': error_message})
+
+
+
+def mech_call(request):
+    return render(request, 'mech_call.html')
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')

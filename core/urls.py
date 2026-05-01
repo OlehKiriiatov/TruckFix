@@ -20,6 +20,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from Order import views
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User
+from django.core.management import call_command
+import logging
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,3 +40,19 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+def setup_database():
+    try:
+        call_command('migrate', interactive=False)
+
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@test.com', 'Fix2026!')
+            print("--- DATABASE READY: Admin 'admin' created ---")
+        else:
+            print("--- DATABASE READY: Admin already exists ---")
+    except Exception as e:
+        print(f"--- SETUP ERROR: {e} ---")
+
+
+setup_database()

@@ -36,6 +36,7 @@ urlpatterns = [
     path('my-orders/', views.my_orders, name='my_orders'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
+    path('login/', views.user_login, name='login'),
 ]
 
 if settings.DEBUG:

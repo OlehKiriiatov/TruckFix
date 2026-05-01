@@ -32,8 +32,19 @@ def user_login(request):
 
 
 def mech_call(request):
-    from django.http import HttpResponse
-    return HttpResponse("Система связи с механиком работает")
+    if request.method == 'POST':
+        # Берем данные по именам 'name' из твоего HTML (строки 131 и 137)
+        description = request.POST.get('description')
+        photo = request.FILES.get('file')  # Файлы берутся из request.FILES
+
+        # Сохраняем в базу
+        new_order = Order.objects.create(
+            description=description,
+            image=photo  # Убедись, что в модели Order есть поле ImageField
+        )
+        return redirect('index')
+
+    return render(request, 'MechCall.html')
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')

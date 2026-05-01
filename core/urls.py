@@ -37,6 +37,3 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if not User.objects.filter(username='admin_boss').exists():
-    User.objects.create_superuser('admin_boss', 'admin@example.com', 'Fix12345')

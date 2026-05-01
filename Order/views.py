@@ -9,6 +9,21 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 
+
+def user_login(request):
+    error_msg = None
+    if request.method == 'POST':
+        u = request.POST.get('username')
+        p = request.POST.get('password')
+        user = authenticate(request, username=u, password=p)
+        if user is not None:
+            login(request, user)
+            return redirect('/')
+        else:
+            error_msg = "Неверный логин или пароль"
+
+    return render(request, 'login.html', {'error': error_msg})
+
 def index(request):
     return render(request, 'index.html')
 

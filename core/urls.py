@@ -27,7 +27,6 @@ import logging
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('MechCall/', views.mech_call, name='mech_call'),
     path('dashboard/', views.mechanic_dashboard, name='mechanic_dashboard'),
     path('delete_order/<int:order_id>/', views.delete_order, name='delete_order'),
     path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
@@ -40,8 +39,7 @@ urlpatterns = [
     path('MechCall/', views.mech_call, name='mech_call'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 def setup_database():

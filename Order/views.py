@@ -28,7 +28,7 @@ def user_login(request):
         else:
             error = "Неверные данные доступа"
 
-    return render(request, 'login.html', {'error': error})
+    return render(request, 'registration/login.html', {'error': error})
 
 
 def mech_call(request):

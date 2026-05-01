@@ -32,19 +32,20 @@ def user_login(request):
 
 
 def mech_call(request):
-    if request.method == 'POST':
-        # Берем данные по именам 'name' из твоего HTML (строки 131 и 137)
-        description = request.POST.get('description')
-        photo = request.FILES.get('file')  # Файлы берутся из request.FILES
+    try:
+        if request.method == 'POST':
+            description = request.POST.get('description')
+            photo = request.FILES.get('file')
 
-        # Сохраняем в базу
-        new_order = Order.objects.create(
-            description=description,
-            image=photo  # Убедись, что в модели Order есть поле ImageField
-        )
-        return redirect('index')
+            from .models import Order
+            Order.objects.create(description=description, image=photo)
 
-    return render(request, 'MechCall.html')
+            return redirect('/')
+        return render(request, 'MechCall.html')
+    except Exception as e:
+        # Это покажет нам реальную причину ошибки 500
+        from django.http import HttpResponse
+        return HttpResponse(f"Ошибка сохранения заявки: {e}")
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')

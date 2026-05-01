@@ -32,25 +32,25 @@ def user_login(request):
 
 
 def mech_call(request):
-    try:
-        if request.method == 'POST':
-            description = request.POST.get('description')
-            photo = request.FILES.get('file')
+    if request.method == 'POST':
+        # Вытаскиваем всё, что есть в форме
+        truck = request.POST.get('truck_model')
+        loc = request.POST.get('location')
+        phone = request.POST.get('phone_number')
+        desc = request.POST.get('description')
+        img = request.FILES.get('file')
 
-            from .models import Order
-            # Добавляем user=request.user, чтобы заявка привязалась к тебе
-            Order.objects.create(
-                description=description,
-                file=photo,
-                user=request.user
-            )
-
-            return redirect('my_orders')  # Лучше сразу на список заявок
-
-        return render(request, 'MechCall.html')
-    except Exception as e:
-        from django.http import HttpResponse
-        return HttpResponse(f"Ошибка сохранения заявки: {e}")
+        from .models import Order
+        Order.objects.create(
+            user=request.user,
+            truck_model=truck,  # Теперь данные попадут в базу
+            location=loc,
+            phone_number=phone,
+            description=desc,
+            image=img
+        )
+        return redirect('my_orders')
+    return render(request, 'MechCall.html')
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')

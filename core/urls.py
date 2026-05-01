@@ -56,5 +56,4 @@ def setup_database():
     except Exception as e:
         print(f"--- SETUP ERROR: {e} ---")
 
-
 setup_database()

@@ -30,9 +30,9 @@ def user_login(request):
     return render(request, 'login.html', {'error': error_message})
 
 
-
 def mech_call(request):
-    return render(request, 'mech_call.html')
+    from django.http import HttpResponse
+    return HttpResponse("Система связи с механиком работает")
 
 def mechanic_dashboard(request):
     orders = Order.objects.all().order_by('-created_at')

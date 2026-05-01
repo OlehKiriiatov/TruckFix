@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Order
 from .forms import OrderForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -10,26 +10,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 
 
-def user_login(request):
-    error_msg = None
-    if request.method == 'POST':
-        u = request.POST.get('username')
-        p = request.POST.get('password')
-        user = authenticate(request, username=u, password=p)
-        if user is not None:
-            login(request, user)
-            return redirect('/')
-        else:
-            error_msg = "Неверный логин или пароль"
-
-    return render(request, 'login.html', {'error': error_msg})
-
 def index(request):
     return render(request, 'index.html')
 
 
 def user_login(request):
-    error_message = None
+    error = None
     if request.method == 'POST':
         u = request.POST.get('username')
         p = request.POST.get('password')
@@ -38,11 +24,11 @@ def user_login(request):
 
         if user is not None:
             login(request, user)
-            return redirect('index')
+            return redirect('/')
         else:
-            error_message = "Неверный логин или пароль"
+            error = "Неверные данные доступа"
 
-    return render(request, 'login.html', {'error': error_message})
+    return render(request, 'login.html', {'error': error})
 
 
 def mech_call(request):
